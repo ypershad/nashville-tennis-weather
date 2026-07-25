@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>Nashville Tennis Weather</title>
+<style>
+  :root{
+    --bg:#0b1220; --panel:#131c2e; --panel2:#1b2740; --line:#26324c;
+    --txt:#e7edf7; --muted:#93a1bd; --accent:#2dd4bf;
+    --good:#22c55e; --caution:#f59e0b; --no:#ef4444;
+    --goodbg:#0e2b1c; --cautionbg:#31260a; --nobg:#33131a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%}
+  a{color:var(--accent)}
+  header{padding:16px 16px 10px;position:sticky;top:0;background:rgba(11,18,32,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:20}
+  h1{font-size:18px;margin:0 0 2px;letter-spacing:.2px}
+  .sub{font-size:12px;color:var(--muted)}
+  .wrap{max-width:820px;margin:0 auto;padding:14px 14px 60px}
+  .tabs{display:flex;gap:6px;margin-top:12px}
+  .tab{flex:1;padding:9px 6px;border:1px solid var(--line);background:var(--panel);
+    color:var(--muted);border-radius:11px;font-size:12.5px;font-weight:600;text-align:center;cursor:pointer;
+    line-height:1.25}
+  .tab.active{background:var(--panel2);color:var(--txt);border-color:var(--accent)}
+  .tab small{display:block;font-weight:400;font-size:10.5px;color:var(--muted);margin-top:2px}
+  .tab.active small{color:var(--accent)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  label.fld{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);flex:1;min-width:130px}
+  select,input,button{font-size:15px;font-family:inherit}
+  select,input{background:var(--panel2);color:var(--txt);border:1px solid var(--line);
+    border-radius:10px;padding:10px 11px;width:100%}
+  button{cursor:pointer}
+  .btn{background:var(--accent);color:#062b26;border:none;border-radius:10px;padding:10px 14px;font-weight:700}
+  .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);font-weight:600}
+  .courtRow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+  .courtRow:first-child{border-top:none}
+  .cname{font-weight:600;font-size:14.5px}
+  .cmeta{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .pill{font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;white-space:nowrap}
+  .pill.good{background:var(--goodbg);color:#4ade80}
+  .pill.caution{background:var(--cautionbg);color:#fbbf24}
+  .pill.no{background:var(--nobg);color:#f87171}
+  .bar{display:flex;height:12px;border-radius:5px;overflow:hidden;margin-top:9px;background:var(--panel2)}
+  .seg{flex:1 1 0}
+  .seg.good{background:var(--good)}.seg.caution{background:var(--caution)}.seg.no{background:var(--no)}
+  .win{font-size:12.5px;color:var(--txt);margin-top:8px;line-height:1.5}
+  .win .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .verdict{font-size:22px;font-weight:800;margin:2px 0 4px}
+  .verdict.good{color:#4ade80}.verdict.caution{color:#fbbf24}.verdict.no{color:#f87171}
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+  .stat{background:var(--panel2);border-radius:10px;padding:9px 11px}
+  .stat b{display:block;font-size:17px}.stat span{font-size:11px;color:var(--muted)}
+  .reasons{margin:10px 0 0;padding-left:18px;font-size:13px;color:var(--muted)}
+  .reasons li{margin:2px 0}
+  .muted{color:var(--muted);font-size:12px}
+  .hdr{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:2px 0 4px}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px}
+  .legend{display:flex;gap:12px;font-size:11px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+  .legend .dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle}
+  .loading{text-align:center;color:var(--muted);padding:30px 10px}
+  .err{background:var(--nobg);color:#fca5a5;border:1px solid #7f1d1d;border-radius:10px;padding:11px;font-size:13px}
+  details{margin-top:10px}summary{cursor:pointer;color:var(--muted);font-size:12px}
+  .rank{font-size:20px;font-weight:800;width:30px;color:var(--muted);text-align:center}
+  .flex1{flex:1}
+  .gran{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 5px;margin-left:6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap" style="padding:0">
+    <h1>🎾 Nashville Tennis Weather</h1>
+    <div class="sub" id="subline">Rain-aware playability for local courts · loading forecast…</div>
+    <div class="tabs">
+      <div class="tab active" data-mode="1" onclick="setMode('1')">Scan courts<small>times to play</small></div>
+      <div class="tab" data-mode="2" onclick="setMode('2')">Check a slot<small>court + time</small></div>
+      <div class="tab" data-mode="3" onclick="setMode('3')">Find a court<small>for my time</small></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="app"><div class="loading">Loading forecast for all courts…</div></div>
+
+  <div class="legend" style="margin-top:14px">
+    <span><span class="dot" style="background:var(--good)"></span>Good — go play</span>
+    <span><span class="dot" style="background:var(--caution)"></span>Caution — playable, watch it</span>
+    <span><span class="dot" style="background:var(--no)"></span>No — rain / too cold / too hot</span>
+  </div>
+  <div class="muted" style="margin-top:12px">
+    Data: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> ·
+    15-min granularity near-term, hourly further out ·
+    <a href="#" onclick="loadWeather();return false;">refresh</a> ·
+    <span id="updated"></span>
+  </div>
+  <details>
+    <summary>Playability rules used</summary>
+    <div class="muted" style="margin-top:6px" id="rulesText"></div>
+  </details>
+</div>
+
+<script>
+/* ============================================================
+   EDIT ME: COURTS
+   Add a court by copying a line. Get lat/lon from Google Maps
+   (right-click a spot → the first two numbers are lat, lon).
+   ============================================================ */
+const COURTS = [
+  { name:"Cedar Hill Park",              area:"Nashville",   lat:36.2692019, lon:-86.7463320 },
+  { name:"Centennial Sportsplex TC",     area:"Nashville",   lat:36.1510414, lon:-86.8111540 },
+  { name:"Charlotte Park",               area:"Nashville",   lat:36.1541519, lon:-86.8728545 },
+  { name:"Vanderbilt (Currey) TC",       area:"Nashville",   lat:36.1415440, lon:-86.8073930 },
+  { name:"Elmington Park",               area:"Nashville",   lat:36.1313896, lon:-86.8221777 },
+  { name:"Fannie Mae Dees Park",         area:"Nashville",   lat:36.1376458, lon:-86.8080123 },
+  { name:"Hadley Park Tennis Club",      area:"Nashville",   lat:36.1671468, lon:-86.8218929 },
+  { name:"McFerrin Park",                area:"Nashville",   lat:36.1821137, lon:-86.7671741 },
+  { name:"Montgomery Bell Academy",      area:"Nashville",   lat:36.1610770, lon:-86.8403350 },
+  { name:"Richland Park",                area:"Nashville",   lat:36.1520685, lon:-86.8451220 },
+  { name:"Ted Rhodes Park",              area:"Nashville",   lat:36.1925102, lon:-86.8157588 },
+  { name:"Crockett Park",                area:"Brentwood",   lat:35.9776687, lon:-86.7763592 },
+  { name:"Granny White Park",            area:"Brentwood",   lat:36.0190151, lon:-86.8207813 },
+  { name:"Maryland Farms YMCA",          area:"Brentwood",   lat:36.0320862, lon:-86.7974611 },
+  { name:"Adams Tennis Complex",         area:"Murfreesboro",lat:35.8512633, lon:-86.4107732 },
+  { name:"Farm & Forge Club",            area:"College Grove (approx — edit if needed)", lat:35.8380000, lon:-86.6990000 },
+];
+
+/* ============================================================
+   EDIT ME: PLAYABILITY THRESHOLDS  (feels-like °F, precip inch, %, mph)
+   ============================================================ */
+const CONFIG = {
+  hours:  { start:6, end:22 },            // default scan window (6am–10pm)
+  temp:   { minNo:40, minCaution:45, maxCaution:90, maxNo:95 },
+  rain:   { precipNo:0.01, probNo:70, probCaution:40 },
+  wind:   { gustCaution:30, gustNo:40, sustainedCaution:22 },
+};
+
+/* ---------------- state ---------------- */
+let DATA = null;        // per-court slot arrays
+let mode = "1";
+let ui = { date:null };
+
+/* ---------------- helpers ---------------- */
+function toMinutes(t){ // "2026-07-25T06:15" -> monotonic minute index
+  const [d,tm]=t.split("T"); const [Y,M,D]=d.split("-").map(Number);
+  const [h,mi]=tm.split(":").map(Number);
+  return Date.UTC(Y,M-1,D,h,mi)/60000;
+}
+function nowMinsCentral(){
+  const f=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Chicago",year:"numeric",
+    month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false});
+  const p={}; f.formatToParts(new Date()).forEach(x=>{if(x.type!=="literal")p[x.type]=x.value});
+  let h=p.hour==="24"?"00":p.hour;
+  return toMinutes(`${p.year}-${p.month}-${p.day}T${h}:${p.minute}`);
+}
+function fmtTime(t){ let [,tm]=t.split("T"); let [h,m]=tm.split(":").map(Number);
+  const ap=h<12?"AM":"PM"; let hh=h%12; if(hh===0)hh=12; return `${hh}:${String(m).padStart(2,"0")} ${ap}`; }
+function fmtHour(t){ let [,tm]=t.split("T"); let [h]=tm.split(":").map(Number);
+  const ap=h<12?"AM":"PM"; let hh=h%12; if(hh===0)hh=12; return `${hh}${ap.toLowerCase()}`; }
+function fmtDate(dstr){ const [Y,M,D]=dstr.split("-").map(Number);
+  const dt=new Date(Date.UTC(Y,M-1,D));
+  return dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"UTC"}); }
+
+/* ---------------- scoring ---------------- */
+function rank(order){ return {good:0,caution:1,no:2}[order]; }
+function score(s){
+  const reasons=[]; let status="good";
+  const bump=x=>{ if(rank(x)>rank(status)) status=x; };
+  const f=s.feels;
+  // rain (biggest concern)
+  if(s.precip>=CONFIG.rain.precipNo){ bump("no"); reasons.push(`Rain in forecast (${s.precip.toFixed(2)} in)`); }
+  else if(s.prob>=CONFIG.rain.probNo){ bump("no"); reasons.push(`High rain chance (${s.prob}%)`); }
+  else if(s.prob>=CONFIG.rain.probCaution){ bump("caution"); reasons.push(`Some rain chance (${s.prob}%)`); }
+  // temperature (feels-like)
+  if(f<CONFIG.temp.minNo){ bump("no"); reasons.push(`Too cold (feels ${Math.round(f)}°)`); }
+  else if(f<CONFIG.temp.minCaution){ bump("caution"); reasons.push(`Chilly (feels ${Math.round(f)}°)`); }
+  else if(f>CONFIG.temp.maxNo){ bump("no"); reasons.push(`Too hot (feels ${Math.round(f)}°)`); }
+  else if(f>CONFIG.temp.maxCaution){ bump("caution"); reasons.push(`Hot (feels ${Math.round(f)}°)`); }
+  // wind (less important → caution only)
+  if(s.gust>=CONFIG.wind.gustNo){ bump("caution"); reasons.push(`Very windy (gusts ${Math.round(s.gust)} mph)`); }
+  else if(s.gust>=CONFIG.wind.gustCaution||s.wind>=CONFIG.wind.sustainedCaution){ bump("caution"); reasons.push(`Breezy (gusts ${Math.round(s.gust)} mph)`); }
+  if(status==="good") reasons.push("Clear & comfortable");
+  return { status, reasons };
+}
+function comfort(s){ // higher = better, for ranking courts
+  let v=100; const f=s.feels;
+  v -= s.prob*0.8;
+  if(s.precip>=CONFIG.rain.precipNo) v-=60;
+  if(f<CONFIG.temp.minNo||f>CONFIG.temp.maxNo) v-=100;
+  else if(f<CONFIG.temp.minCaution||f>CONFIG.temp.maxCaution) v-=15;
+  v -= Math.max(0,s.gust-15)*0.8;
+  v -= Math.abs(f-72)*0.35;
+  return Math.max(0,Math.min(100,Math.round(v)));
+}
+
+/* ---------------- data ---------------- */
+function buildSlots(m15,hourly){
+  const probByHour={};
+  (hourly.time||[]).forEach((t,i)=>{ probByHour[t.slice(0,13)]=hourly.precipitation_probability?.[i]??0; });
+  const slots=[];
+  const mt=m15?.time||[];
+  for(let i=0;i<mt.length;i++){
+    const t=mt[i];
+    const feels=m15.apparent_temperature?.[i]??m15.temperature_2m?.[i]??0;
+    slots.push({ t, date:t.slice(0,10), mins:toMinutes(t), gran:15,
+      temp:m15.temperature_2m?.[i]??feels, feels,
+      precip:m15.precipitation?.[i]??0, prob:probByHour[t.slice(0,13)]??0,
+      wind:m15.wind_speed_10m?.[i]??0, gust:m15.wind_gusts_10m?.[i]??0 });
+  }
+  const lastM=slots.length?slots[slots.length-1].mins:-1;
+  const ht=hourly.time||[];
+  for(let i=0;i<ht.length;i++){
+    const t=ht[i], mn=toMinutes(t);
+    if(mn<=lastM) continue;
+    const feels=hourly.apparent_temperature?.[i]??hourly.temperature_2m?.[i]??0;
+    slots.push({ t, date:t.slice(0,10), mins:mn, gran:60,
+      temp:hourly.temperature_2m?.[i]??feels, feels,
+      precip:hourly.precipitation?.[i]??0, prob:hourly.precipitation_probability?.[i]??0,
+      wind:hourly.wind_speed_10m?.[i]??0, gust:hourly.wind_gusts_10m?.[i]??0 });
+  }
+  return slots;
+}
+
+async function loadWeather(){
+  document.getElementById("app").innerHTML='<div class="loading">Loading forecast for all courts…</div>';
+  const lats=COURTS.map(c=>c.lat.toFixed(4)).join(",");
+  const lons=COURTS.map(c=>c.lon.toFixed(4)).join(",");
+  const url="https://api.open-meteo.com/v1/forecast"
+    +`?latitude=${lats}&longitude=${lons}`
+    +"&minutely_15=temperature_2m,apparent_temperature,precipitation,wind_speed_10m,wind_gusts_10m"
+    +"&hourly=precipitation_probability,precipitation,temperature_2m,apparent_temperature,wind_speed_10m,wind_gusts_10m"
+    +"&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
+    +"&timezone=America%2FChicago&forecast_days=7";
+  try{
+    const res=await fetch(url);
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    let json=await res.json();
+    if(!Array.isArray(json)) json=[json];
+    DATA=COURTS.map((c,i)=>({ court:c, slots:buildSlots(json[i]?.minutely_15||{}, json[i]?.hourly||{}) }));
+    const dates=[...new Set(DATA[0].slots.map(s=>s.date))];
+    if(!ui.date||!dates.includes(ui.date)) ui.date=dates[0];
+    document.getElementById("subline").textContent="Rain-aware playability for "+COURTS.length+" local courts";
+    const now=new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"});
+    document.getElementById("updated").textContent="updated "+now+" CT";
+    render();
+  }catch(e){
+    document.getElementById("app").innerHTML='<div class="err">Could not load the forecast ('+e.message
+      +'). Check your connection and tap refresh. If you just opened this file directly, it still needs internet to reach Open-Meteo.</div>';
+  }
+}
+
+/* ---------------- windows ---------------- */
+function windowsFor(slots){ // merge consecutive non-"no" slots within hour range
+  const inHrs=s=>{const h=+s.t.slice(11,13); return h>=CONFIG.hours.start && h<CONFIG.hours.end;};
+  const list=slots.filter(inHrs).sort((a,b)=>a.mins-b.mins);
+  const wins=[]; let cur=null;
+  for(const s of list){
+    const st=score(s).status;
+    if(st==="no"){ if(cur){wins.push(cur);cur=null;} continue; }
+    if(cur && s.mins-cur.end<=cur.step+1){ // contiguous
+      cur.endT=s.t; cur.end=s.mins; cur.status=rank(st)>rank(cur.status)?st:cur.status;
+    } else {
+      if(cur) wins.push(cur);
+      cur={startT:s.t,endT:s.t,end:s.mins,step:s.gran,status:st};
+    }
+  }
+  if(cur) wins.push(cur);
+  return wins.filter(w=>true);
+}
+
+/* ---------------- rendering ---------------- */
+function dateSelect(id,onchange){
+  const dates=[...new Set(DATA[0].slots.map(s=>s.date))];
+  return `<select id="${id}" onchange="${onchange}">`+dates.map(d=>
+    `<option value="${d}" ${d===ui.date?"selected":""}>${fmtDate(d)}</option>`).join("")+`</select>`;
+}
+
+function render(){
+  if(!DATA) return;
+  const app=document.getElementById("app");
+  if(mode==="1") app.innerHTML=renderScan();
+  else if(mode==="2") app.innerHTML=renderCheck();
+  else app.innerHTML=renderFind();
+}
+
+function renderScan(){
+  let h=`<div class="card"><div class="toolbar">
+     <div class="hdr" style="margin:0">When can I play?</div>
+     <label class="fld" style="flex:0 0 auto;min-width:150px"><span>Day</span>${dateSelect("scanDate","ui.date=this.value;render()")}</label>
+   </div><div class="muted">Green/amber blocks show playable times ${CONFIG.hours.start} AM–${CONFIG.hours.end-12} PM. Courts with the most clear time first.</div></div>`;
+  const rows=DATA.map(d=>{
+    const day=d.slots.filter(s=>s.date===ui.date);
+    const wins=windowsFor(day);
+    const inHrs=day.filter(s=>{const hh=+s.t.slice(11,13);return hh>=CONFIG.hours.start&&hh<CONFIG.hours.end;}).sort((a,b)=>a.mins-b.mins);
+    const goodMin=inHrs.reduce((n,s)=>n+(score(s).status!=="no"?s.gran:0),0);
+    return { d, wins, inHrs, goodMin };
+  }).sort((a,b)=>b.goodMin-a.goodMin);
+
+  h+=`<div class="card">`;
+  rows.forEach(r=>{
+    const bar=r.inHrs.map(s=>`<div class="seg ${score(s).status}"></div>`).join("");
+    const winTxt = r.wins.length
+      ? r.wins.map(w=>`<span class="dot" style="background:var(--${w.status})"></span>${fmtTime(w.startT)}–${fmtTime(nextLabel(w))} <span class="pill ${w.status}" style="padding:1px 7px">${w.status==="good"?"good":"ok"}</span>`).join("<br>")
+      : `<span style="color:var(--no)">No playable window this day</span>`;
+    const hrs=(r.goodMin/60);
+    h+=`<div class="courtRow" style="flex-direction:column;align-items:stretch">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <div><div class="cname">${r.d.court.name}</div><div class="cmeta">${r.d.court.area}</div></div>
+          <span class="pill ${hrs>=2?"good":hrs>0?"caution":"no"}">${hrs>0?hrs.toFixed(hrs<10?1:0)+"h playable":"none"}</span>
+        </div>
+        <div class="bar" title="${CONFIG.hours.start}:00–${CONFIG.hours.end}:00">${bar}</div>
+        <div class="win">${winTxt}</div>
+      </div>`;
+  });
+  h+=`</div>`;
+  return h;
+}
+function nextLabel(w){ // end label = end slot + its step so range is inclusive of that block
+  const endMins=w.end+w.step;
+  const base=new Date(Date.UTC(1970,0,1)); base.setUTCMinutes(endMins);
+  const Y=base.getUTCFullYear(),M=String(base.getUTCMonth()+1).padStart(2,"0"),D=String(base.getUTCDate()).padStart(2,"0");
+  const hh=String(base.getUTCHours()).padStart(2,"0"),mm=String(base.getUTCMinutes()).padStart(2,"0");
+  return `${Y}-${M}-${D}T${hh}:${mm}`;
+}
+
+function nearestSlot(slots,targetMins){
+  let best=null,bd=Infinity;
+  for(const s of slots){ const d=Math.abs(s.mins-targetMins); if(d<bd){bd=d;best=s;} }
+  return best;
+}
+function timeOptions(){
+  let o="";
+  for(let h=CONFIG.hours.start;h<CONFIG.hours.end;h++){
+    for(const m of [0,30]){
+      const ap=h<12?"AM":"PM"; let hh=h%12; if(hh===0)hh=12;
+      const val=`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+      o+=`<option value="${val}">${hh}:${String(m).padStart(2,"0")} ${ap}</option>`;
+    }
+  }
+  return o;
+}
+function targetMinsFrom(date,time){ return toMinutes(`${date}T${time}`); }
+
+function statCard(s){
+  return `<div class="stats">
+    <div class="stat"><b>${Math.round(s.feels)}°</b><span>feels like (${Math.round(s.temp)}° actual)</span></div>
+    <div class="stat"><b>${s.prob}%</b><span>rain chance</span></div>
+    <div class="stat"><b>${s.precip.toFixed(2)}"</b><span>precip this ${s.gran===15?"15 min":"hour"}</span></div>
+    <div class="stat"><b>${Math.round(s.wind)} mph</b><span>wind · gusts ${Math.round(s.gust)}</span></div>
+  </div>`;
+}
+
+function renderCheck(){
+  const courtOpts=DATA.map((d,i)=>`<option value="${i}">${d.court.name} · ${d.court.area}</option>`).join("");
+  let h=`<div class="card">
+    <div class="hdr">Is it good to play?</div>
+    <div class="row">
+      <label class="fld"><span>Court</span><select id="ckCourt" onchange="renderCheckResult()">${courtOpts}</select></label>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <label class="fld"><span>Day</span>${dateSelect("ckDate","renderCheckResult()")}</label>
+      <label class="fld"><span>Time</span><select id="ckTime" onchange="renderCheckResult()">${timeOptions()}</select></label>
+    </div>
+  </div>
+  <div id="ckResult"></div>`;
+  setTimeout(()=>{ setNearestDefaultTime("ckTime"); renderCheckResult(); },0);
+  return h;
+}
+function renderCheckResult(){
+  const ci=+document.getElementById("ckCourt").value;
+  const date=document.getElementById("ckDate").value;
+  const time=document.getElementById("ckTime").value;
+  const d=DATA[ci];
+  const target=targetMinsFrom(date,time);
+  const s=nearestSlot(d.slots.filter(x=>x.date===date),target)||nearestSlot(d.slots,target);
+  if(!s){ document.getElementById("ckResult").innerHTML='<div class="card err">No forecast for that time.</div>'; return; }
+  const r=score(s);
+  const label={good:"Yes — go play 🎾",caution:"Maybe — playable, watch it",no:"No — not a good time"}[r.status];
+  document.getElementById("ckResult").innerHTML=`<div class="card">
+    <div class="cmeta">${d.court.name} · ${fmtDate(date)} · ${fmtTime(s.t)}<span class="gran">${s.gran===15?"15-min":"hourly"}</span></div>
+    <div class="verdict ${r.status}">${label}</div>
+    ${statCard(s)}
+    <ul class="reasons">${r.reasons.map(x=>`<li>${x}</li>`).join("")}</ul>
+  </div>`;
+}
+
+function renderFind(){
+  let h=`<div class="card">
+    <div class="hdr">Best courts for my time</div>
+    <div class="row">
+      <label class="fld"><span>Day</span>${dateSelect("fdDate","renderFindResult()")}</label>
+      <label class="fld"><span>Time</span><select id="fdTime" onchange="renderFindResult()">${timeOptions()}</select></label>
+    </div>
+  </div><div id="fdResult"></div>`;
+  setTimeout(()=>{ setNearestDefaultTime("fdTime"); renderFindResult(); },0);
+  return h;
+}
+function renderFindResult(){
+  const date=document.getElementById("fdDate").value;
+  const time=document.getElementById("fdTime").value;
+  const target=targetMinsFrom(date,time);
+  const ranked=DATA.map(d=>{
+    const s=nearestSlot(d.slots.filter(x=>x.date===date),target)||nearestSlot(d.slots,target);
+    return s?{court:d.court,s,r:score(s),c:comfort(s)}:null;
+  }).filter(Boolean).sort((a,b)=> (rank(a.r.status)-rank(b.r.status)) || (b.c-a.c) );
+  let h=`<div class="card"><div class="cmeta" style="margin-bottom:4px">${fmtDate(date)} · around ${fmtTime(`${date}T${time}`)} — ${ranked.filter(x=>x.r.status!=="no").length} of ${ranked.length} courts playable</div>`;
+  ranked.forEach((x,i)=>{
+    h+=`<div class="courtRow">
+        <div class="rank">${i+1}</div>
+        <div class="flex1">
+          <div class="cname">${x.court.name}</div>
+          <div class="cmeta">${x.court.area} · feels ${Math.round(x.s.feels)}° · ${x.s.prob}% rain · gusts ${Math.round(x.s.gust)} mph</div>
+        </div>
+        <span class="pill ${x.r.status}">${x.r.status==="good"?"good":x.r.status==="caution"?"ok":"no"}</span>
+      </div>`;
+  });
+  h+=`</div>`;
+  document.getElementById("fdResult").innerHTML=h;
+}
+
+function setNearestDefaultTime(id){
+  const sel=document.getElementById(id); if(!sel) return;
+  // if selected day is today, default to the next half-hour; else leave at first option
+  const dateSel=document.getElementById(id==="ckTime"?"ckDate":"fdDate");
+  const date=dateSel?dateSel.value:ui.date;
+  const dates=[...new Set(DATA[0].slots.map(s=>s.date))];
+  if(date!==dates[0]) return;
+  const nm=nowMinsCentral();
+  for(const opt of sel.options){
+    if(targetMinsFrom(date,opt.value)>=nm){ sel.value=opt.value; return; }
+  }
+}
+
+function setMode(m){ mode=m;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.mode===m));
+  render();
+}
+
+/* rules text */
+document.getElementById("rulesText").innerHTML=
+  `Rain is the hard stop: any measurable precip or ≥${CONFIG.rain.probNo}% chance = <b>No</b>; ${CONFIG.rain.probCaution}–${CONFIG.rain.probNo}% = caution. `
+ +`Feels-like below ${CONFIG.temp.minNo}° or above ${CONFIG.temp.maxNo}° = No; ${CONFIG.temp.minNo}–${CONFIG.temp.minCaution}° or ${CONFIG.temp.maxCaution}–${CONFIG.temp.maxNo}° = caution. `
+ +`Wind is minor: gusts ≥${CONFIG.wind.gustCaution} mph = caution only. Edit these in the CONFIG block near the top of the file.`;
+
+loadWeather();
+</script>
+</body>
+</html>
