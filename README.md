@@ -2,10 +2,11 @@
 
 A free, mobile-friendly web page that tells you when and where it's good to play tennis around Nashville, based on live weather (rain, feels-like temp, wind). It's a single file — `index.html` — with no server, no API key, and no build step. Weather comes from the free [Open-Meteo](https://open-meteo.com) API, fetched directly in the browser.
 
-## Three modes
-1. **Scan courts** — pick a day, see playable time windows for every court (sorted by most clear time).
-2. **Check a slot** — pick a court + time, get a yes/maybe/no with the reasons.
-3. **Find a court** — pick a time, get courts ranked best-to-worst for that moment.
+## Four modes
+1. **Scan** — pick a day, see playable time windows for every court (sorted by most clear time).
+2. **Check** — pick a court, start time, and match length (30 min–3 hr); get a yes/maybe/no for the whole match window, including when conditions turn (e.g. "Good until 2:00 PM, then rain").
+3. **Find** — pick a start time and match length; get courts ranked best-to-worst for that window.
+4. **Radar** — pick a court and day; see the temperature/feels-like/rain-chance curve for the day plus an interactive radar map (toggle radar / temperature / wind) centered on that court.
 
 ## Put it online for free (5 minutes)
 

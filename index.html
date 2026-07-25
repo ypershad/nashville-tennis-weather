@@ -3,83 +3,96 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f766e">
+<meta name="theme-color" content="#0a2540">
 <title>Nashville Tennis Weather</title>
 <style>
   :root{
-    --bg:#0b1220; --panel:#131c2e; --panel2:#1b2740; --line:#26324c;
-    --txt:#e7edf7; --muted:#93a1bd; --accent:#2dd4bf;
-    --good:#22c55e; --caution:#f59e0b; --no:#ef4444;
-    --goodbg:#0e2b1c; --cautionbg:#31260a; --nobg:#33131a;
+    /* USTA / US Open light palette */
+    --bg:#eaf1f8; --panel:#ffffff; --panel2:#f2f6fb; --line:#d7e1ee;
+    --txt:#0a2540; --muted:#5c6b82; --navy:#0a2540; --blue:#2f6cc0; --accent:#2f6cc0;
+    --ball:#c3d92a;
+    --good:#3f9142; --caution:#d38416; --no:#d1495b;
+    --goodbg:#e6f4e3; --cautionbg:#fbefda; --nobg:#fbe4e8;
+    --goodtx:#2e7a32; --cautiontx:#a9660c; --notx:#b03047;
+    --shadow:0 1px 3px rgba(10,37,64,.09),0 1px 2px rgba(10,37,64,.05);
   }
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--bg);color:var(--txt);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     -webkit-text-size-adjust:100%}
-  a{color:var(--accent)}
-  header{padding:16px 16px 10px;position:sticky;top:0;background:rgba(11,18,32,.92);
+  a{color:var(--blue)}
+  header{padding:14px 16px 0;position:sticky;top:0;background:rgba(234,241,248,.94);
     backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:20}
-  h1{font-size:18px;margin:0 0 2px;letter-spacing:.2px}
+  h1{font-size:19px;margin:0 0 2px;letter-spacing:.2px;color:var(--navy);display:flex;align-items:center;gap:8px}
+  .ball{width:16px;height:16px;border-radius:50%;background:var(--ball);
+    box-shadow:inset 0 0 0 2px #fff, inset -3px -3px 0 rgba(0,0,0,.06);display:inline-block}
   .sub{font-size:12px;color:var(--muted)}
-  .wrap{max-width:820px;margin:0 auto;padding:14px 14px 60px}
-  .tabs{display:flex;gap:6px;margin-top:12px}
-  .tab{flex:1;padding:9px 6px;border:1px solid var(--line);background:var(--panel);
-    color:var(--muted);border-radius:11px;font-size:12.5px;font-weight:600;text-align:center;cursor:pointer;
-    line-height:1.25}
-  .tab.active{background:var(--panel2);color:var(--txt);border-color:var(--accent)}
-  .tab small{display:block;font-weight:400;font-size:10.5px;color:var(--muted);margin-top:2px}
-  .tab.active small{color:var(--accent)}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
-  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  label.fld{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);flex:1;min-width:130px}
+  .wrap{max-width:820px;margin:0 auto;padding:14px 14px 64px}
+  .tabs{display:flex;gap:6px;margin-top:12px;padding-bottom:12px}
+  .tab{flex:1;padding:8px 4px;border:1px solid var(--line);background:var(--panel);
+    color:var(--muted);border-radius:11px;font-size:12.5px;font-weight:700;text-align:center;cursor:pointer;line-height:1.2}
+  .tab.active{background:#eaf2fc;color:var(--navy);border-color:var(--blue);box-shadow:var(--shadow)}
+  .tab small{display:block;font-weight:500;font-size:10px;color:var(--muted);margin-top:2px}
+  .tab.active small{color:var(--blue)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;box-shadow:var(--shadow)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  label.fld{display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--muted);font-weight:600;flex:1;min-width:120px}
   select,input,button{font-size:15px;font-family:inherit}
-  select,input{background:var(--panel2);color:var(--txt);border:1px solid var(--line);
-    border-radius:10px;padding:10px 11px;width:100%}
+  select,input{background:#fff;color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 11px;width:100%}
+  select:focus,input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,108,192,.15)}
   button{cursor:pointer}
-  .btn{background:var(--accent);color:#062b26;border:none;border-radius:10px;padding:10px 14px;font-weight:700}
-  .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);font-weight:600}
-  .courtRow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-weight:700}
+  .toggle{display:flex;gap:6px;margin-top:2px}
+  .toggle button{flex:1;background:var(--panel2);color:var(--muted);border:1px solid var(--line);
+    border-radius:9px;padding:8px 6px;font-weight:700;font-size:13px}
+  .toggle button.on{background:#eaf2fc;color:var(--navy);border-color:var(--blue)}
+  .courtRow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
   .courtRow:first-child{border-top:none}
-  .cname{font-weight:600;font-size:14.5px}
+  .cname{font-weight:700;font-size:14.5px;color:var(--navy)}
   .cmeta{font-size:11.5px;color:var(--muted);margin-top:2px}
-  .pill{font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;white-space:nowrap}
-  .pill.good{background:var(--goodbg);color:#4ade80}
-  .pill.caution{background:var(--cautionbg);color:#fbbf24}
-  .pill.no{background:var(--nobg);color:#f87171}
-  .bar{display:flex;height:12px;border-radius:5px;overflow:hidden;margin-top:9px;background:var(--panel2)}
+  .pill{font-size:11px;font-weight:800;padding:4px 9px;border-radius:999px;white-space:nowrap}
+  .pill.good{background:var(--goodbg);color:var(--goodtx)}
+  .pill.caution{background:var(--cautionbg);color:var(--cautiontx)}
+  .pill.no{background:var(--nobg);color:var(--notx)}
+  .bar{display:flex;height:12px;border-radius:6px;overflow:hidden;margin-top:9px;background:var(--panel2);border:1px solid var(--line)}
   .seg{flex:1 1 0}
   .seg.good{background:var(--good)}.seg.caution{background:var(--caution)}.seg.no{background:var(--no)}
-  .win{font-size:12.5px;color:var(--txt);margin-top:8px;line-height:1.5}
-  .win .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
-  .verdict{font-size:22px;font-weight:800;margin:2px 0 4px}
-  .verdict.good{color:#4ade80}.verdict.caution{color:#fbbf24}.verdict.no{color:#f87171}
+  .win{font-size:12.5px;color:var(--txt);margin-top:8px;line-height:1.6}
+  .win .dot,.legend .dot2{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .verdict{font-size:21px;font-weight:800;margin:4px 0 2px;line-height:1.2}
+  .verdict.good{color:var(--goodtx)}.verdict.caution{color:var(--cautiontx)}.verdict.no{color:var(--notx)}
+  .winbar{display:flex;height:26px;border-radius:8px;overflow:hidden;margin:12px 0 6px;border:1px solid var(--line)}
+  .winbar .seg{position:relative}
   .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
-  .stat{background:var(--panel2);border-radius:10px;padding:9px 11px}
-  .stat b{display:block;font-size:17px}.stat span{font-size:11px;color:var(--muted)}
-  .reasons{margin:10px 0 0;padding-left:18px;font-size:13px;color:var(--muted)}
-  .reasons li{margin:2px 0}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+  .stat b{display:block;font-size:16px;color:var(--navy)}.stat span{font-size:11px;color:var(--muted)}
+  .reasons{margin:12px 0 0;padding-left:18px;font-size:13px;color:var(--muted)}
+  .reasons li{margin:3px 0}
   .muted{color:var(--muted);font-size:12px}
-  .hdr{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:2px 0 4px}
-  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px}
-  .legend{display:flex;gap:12px;font-size:11px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
-  .legend .dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle}
-  .loading{text-align:center;color:var(--muted);padding:30px 10px}
-  .err{background:var(--nobg);color:#fca5a5;border:1px solid #7f1d1d;border-radius:10px;padding:11px;font-size:13px}
+  .hdr{font-size:12px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.7px;margin:0 0 4px}
+  .legend{display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+  .legend .dot2{width:9px;height:9px;border-radius:3px}
+  .loading{text-align:center;color:var(--muted);padding:34px 10px}
+  .err{background:var(--nobg);color:var(--notx);border:1px solid #f1c4cd;border-radius:10px;padding:12px;font-size:13px}
   details{margin-top:10px}summary{cursor:pointer;color:var(--muted);font-size:12px}
-  .rank{font-size:20px;font-weight:800;width:30px;color:var(--muted);text-align:center}
+  .rank{font-size:19px;font-weight:800;width:28px;color:var(--blue);text-align:center}
   .flex1{flex:1}
   .gran{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 5px;margin-left:6px}
+  .chartwrap{width:100%;overflow:hidden;border:1px solid var(--line);border-radius:10px;background:#fff;margin-top:6px}
+  .radar{width:100%;height:380px;border:1px solid var(--line);border-radius:10px;margin-top:8px;background:var(--panel2)}
+  .subnote{font-size:11.5px;color:var(--muted);margin-top:6px}
 </style>
 </head>
 <body>
 <header>
   <div class="wrap" style="padding:0">
-    <h1>🎾 Nashville Tennis Weather</h1>
+    <h1><span class="ball"></span> Nashville Tennis Weather</h1>
     <div class="sub" id="subline">Rain-aware playability for local courts · loading forecast…</div>
     <div class="tabs">
-      <div class="tab active" data-mode="1" onclick="setMode('1')">Scan courts<small>times to play</small></div>
-      <div class="tab" data-mode="2" onclick="setMode('2')">Check a slot<small>court + time</small></div>
-      <div class="tab" data-mode="3" onclick="setMode('3')">Find a court<small>for my time</small></div>
+      <div class="tab active" data-mode="1" onclick="setMode('1')">Scan<small>times to play</small></div>
+      <div class="tab" data-mode="2" onclick="setMode('2')">Check<small>court + time</small></div>
+      <div class="tab" data-mode="3" onclick="setMode('3')">Find<small>for my time</small></div>
+      <div class="tab" data-mode="4" onclick="setMode('4')">Radar<small>temp + map</small></div>
     </div>
   </div>
 </header>
@@ -87,16 +100,15 @@
 <div class="wrap">
   <div id="app"><div class="loading">Loading forecast for all courts…</div></div>
 
-  <div class="legend" style="margin-top:14px">
-    <span><span class="dot" style="background:var(--good)"></span>Good — go play</span>
-    <span><span class="dot" style="background:var(--caution)"></span>Caution — playable, watch it</span>
-    <span><span class="dot" style="background:var(--no)"></span>No — rain / too cold / too hot</span>
+  <div class="legend">
+    <span><span class="dot2" style="background:var(--good)"></span>Good — go play</span>
+    <span><span class="dot2" style="background:var(--caution)"></span>Caution — watch it</span>
+    <span><span class="dot2" style="background:var(--no)"></span>No — rain / too cold / hot</span>
   </div>
   <div class="muted" style="margin-top:12px">
     Data: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> ·
-    15-min granularity near-term, hourly further out ·
-    <a href="#" onclick="loadWeather();return false;">refresh</a> ·
-    <span id="updated"></span>
+    radar by <a href="https://www.windy.com" target="_blank" rel="noopener">Windy</a> ·
+    <a href="#" onclick="loadWeather();return false;">refresh</a> · <span id="updated"></span>
   </div>
   <details>
     <summary>Playability rules used</summary>
@@ -130,321 +142,392 @@ const COURTS = [
 ];
 
 /* ============================================================
-   EDIT ME: PLAYABILITY THRESHOLDS  (feels-like °F, precip inch, %, mph)
+   EDIT ME: PLAYABILITY THRESHOLDS (feels-like °F, precip inch, %, mph)
    ============================================================ */
 const CONFIG = {
-  hours:  { start:6, end:22 },            // default scan window (6am–10pm)
+  hours:  { start:6, end:22 },
   temp:   { minNo:40, minCaution:45, maxCaution:90, maxNo:95 },
   rain:   { precipNo:0.01, probNo:70, probCaution:40 },
   wind:   { gustCaution:30, gustNo:40, sustainedCaution:22 },
 };
+const DURATIONS = [[30,"30 min"],[60,"1 hr"],[90,"1.5 hr"],[120,"2 hr"],[180,"3 hr"]];
 
 /* ---------------- state ---------------- */
-let DATA = null;        // per-court slot arrays
-let mode = "1";
-let ui = { date:null };
+let DATA=null, mode="1", ui={date:null};
 
-/* ---------------- helpers ---------------- */
-function toMinutes(t){ // "2026-07-25T06:15" -> monotonic minute index
-  const [d,tm]=t.split("T"); const [Y,M,D]=d.split("-").map(Number);
-  const [h,mi]=tm.split(":").map(Number);
-  return Date.UTC(Y,M-1,D,h,mi)/60000;
-}
+/* ---------------- time helpers ---------------- */
+function toMinutes(t){ const[d,tm]=t.split("T");const[Y,M,D]=d.split("-").map(Number);
+  const[h,mi]=tm.split(":").map(Number); return Date.UTC(Y,M-1,D,h,mi)/60000; }
 function nowMinsCentral(){
-  const f=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Chicago",year:"numeric",
-    month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false});
+  const f=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Chicago",year:"numeric",month:"2-digit",
+    day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false});
   const p={}; f.formatToParts(new Date()).forEach(x=>{if(x.type!=="literal")p[x.type]=x.value});
-  let h=p.hour==="24"?"00":p.hour;
-  return toMinutes(`${p.year}-${p.month}-${p.day}T${h}:${p.minute}`);
+  let h=p.hour==="24"?"00":p.hour; return toMinutes(`${p.year}-${p.month}-${p.day}T${h}:${p.minute}`);
 }
-function fmtTime(t){ let [,tm]=t.split("T"); let [h,m]=tm.split(":").map(Number);
-  const ap=h<12?"AM":"PM"; let hh=h%12; if(hh===0)hh=12; return `${hh}:${String(m).padStart(2,"0")} ${ap}`; }
-function fmtHour(t){ let [,tm]=t.split("T"); let [h]=tm.split(":").map(Number);
-  const ap=h<12?"AM":"PM"; let hh=h%12; if(hh===0)hh=12; return `${hh}${ap.toLowerCase()}`; }
-function fmtDate(dstr){ const [Y,M,D]=dstr.split("-").map(Number);
-  const dt=new Date(Date.UTC(Y,M-1,D));
-  return dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"UTC"}); }
+function todayCentral(){
+  const f=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Chicago",year:"numeric",month:"2-digit",day:"2-digit"});
+  const p={}; f.formatToParts(new Date()).forEach(x=>{if(x.type!=="literal")p[x.type]=x.value});
+  return `${p.year}-${p.month}-${p.day}`;
+}
+function fmtTime(t){ let[,tm]=t.split("T");let[h,m]=tm.split(":").map(Number);
+  const ap=h<12?"AM":"PM";let hh=h%12;if(hh===0)hh=12;return `${hh}:${String(m).padStart(2,"0")} ${ap}`; }
+function labelFromMins(m){ const b=new Date(Date.UTC(1970,0,1));b.setUTCMinutes(m);
+  let h=b.getUTCHours(),mi=b.getUTCMinutes();const ap=h<12?"AM":"PM";let hh=h%12;if(hh===0)hh=12;
+  return `${hh}:${String(mi).padStart(2,"0")} ${ap}`; }
+function fmtDate(dstr){ const[Y,M,D]=dstr.split("-").map(Number);
+  return new Date(Date.UTC(Y,M-1,D)).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"UTC"}); }
 
 /* ---------------- scoring ---------------- */
-function rank(order){ return {good:0,caution:1,no:2}[order]; }
+function rank(o){ return {good:0,caution:1,no:2}[o]; }
 function score(s){
   const reasons=[]; let status="good";
   const bump=x=>{ if(rank(x)>rank(status)) status=x; };
   const f=s.feels;
-  // rain (biggest concern)
   if(s.precip>=CONFIG.rain.precipNo){ bump("no"); reasons.push(`Rain in forecast (${s.precip.toFixed(2)} in)`); }
   else if(s.prob>=CONFIG.rain.probNo){ bump("no"); reasons.push(`High rain chance (${s.prob}%)`); }
   else if(s.prob>=CONFIG.rain.probCaution){ bump("caution"); reasons.push(`Some rain chance (${s.prob}%)`); }
-  // temperature (feels-like)
   if(f<CONFIG.temp.minNo){ bump("no"); reasons.push(`Too cold (feels ${Math.round(f)}°)`); }
   else if(f<CONFIG.temp.minCaution){ bump("caution"); reasons.push(`Chilly (feels ${Math.round(f)}°)`); }
   else if(f>CONFIG.temp.maxNo){ bump("no"); reasons.push(`Too hot (feels ${Math.round(f)}°)`); }
   else if(f>CONFIG.temp.maxCaution){ bump("caution"); reasons.push(`Hot (feels ${Math.round(f)}°)`); }
-  // wind (less important → caution only)
   if(s.gust>=CONFIG.wind.gustNo){ bump("caution"); reasons.push(`Very windy (gusts ${Math.round(s.gust)} mph)`); }
   else if(s.gust>=CONFIG.wind.gustCaution||s.wind>=CONFIG.wind.sustainedCaution){ bump("caution"); reasons.push(`Breezy (gusts ${Math.round(s.gust)} mph)`); }
   if(status==="good") reasons.push("Clear & comfortable");
   return { status, reasons };
 }
-function comfort(s){ // higher = better, for ranking courts
-  let v=100; const f=s.feels;
-  v -= s.prob*0.8;
-  if(s.precip>=CONFIG.rain.precipNo) v-=60;
+function comfort(s){ let v=100;const f=s.feels;
+  v-=s.prob*0.8; if(s.precip>=CONFIG.rain.precipNo) v-=60;
   if(f<CONFIG.temp.minNo||f>CONFIG.temp.maxNo) v-=100;
   else if(f<CONFIG.temp.minCaution||f>CONFIG.temp.maxCaution) v-=15;
-  v -= Math.max(0,s.gust-15)*0.8;
-  v -= Math.abs(f-72)*0.35;
-  return Math.max(0,Math.min(100,Math.round(v)));
-}
+  v-=Math.max(0,s.gust-15)*0.8; v-=Math.abs(f-72)*0.35;
+  return Math.max(0,Math.min(100,Math.round(v))); }
 
 /* ---------------- data ---------------- */
 function buildSlots(m15,hourly){
   const probByHour={};
   (hourly.time||[]).forEach((t,i)=>{ probByHour[t.slice(0,13)]=hourly.precipitation_probability?.[i]??0; });
-  const slots=[];
-  const mt=m15?.time||[];
-  for(let i=0;i<mt.length;i++){
-    const t=mt[i];
+  const slots=[]; const mt=m15?.time||[];
+  for(let i=0;i<mt.length;i++){ const t=mt[i];
     const feels=m15.apparent_temperature?.[i]??m15.temperature_2m?.[i]??0;
-    slots.push({ t, date:t.slice(0,10), mins:toMinutes(t), gran:15,
-      temp:m15.temperature_2m?.[i]??feels, feels,
-      precip:m15.precipitation?.[i]??0, prob:probByHour[t.slice(0,13)]??0,
-      wind:m15.wind_speed_10m?.[i]??0, gust:m15.wind_gusts_10m?.[i]??0 });
-  }
-  const lastM=slots.length?slots[slots.length-1].mins:-1;
-  const ht=hourly.time||[];
-  for(let i=0;i<ht.length;i++){
-    const t=ht[i], mn=toMinutes(t);
-    if(mn<=lastM) continue;
+    slots.push({ t,date:t.slice(0,10),mins:toMinutes(t),gran:15,
+      temp:m15.temperature_2m?.[i]??feels,feels,precip:m15.precipitation?.[i]??0,
+      prob:probByHour[t.slice(0,13)]??0,wind:m15.wind_speed_10m?.[i]??0,gust:m15.wind_gusts_10m?.[i]??0 }); }
+  const lastM=slots.length?slots[slots.length-1].mins:-1; const ht=hourly.time||[];
+  for(let i=0;i<ht.length;i++){ const t=ht[i],mn=toMinutes(t); if(mn<=lastM) continue;
     const feels=hourly.apparent_temperature?.[i]??hourly.temperature_2m?.[i]??0;
-    slots.push({ t, date:t.slice(0,10), mins:mn, gran:60,
-      temp:hourly.temperature_2m?.[i]??feels, feels,
-      precip:hourly.precipitation?.[i]??0, prob:hourly.precipitation_probability?.[i]??0,
-      wind:hourly.wind_speed_10m?.[i]??0, gust:hourly.wind_gusts_10m?.[i]??0 });
-  }
+    slots.push({ t,date:t.slice(0,10),mins:mn,gran:60,
+      temp:hourly.temperature_2m?.[i]??feels,feels,precip:hourly.precipitation?.[i]??0,
+      prob:hourly.precipitation_probability?.[i]??0,wind:hourly.wind_speed_10m?.[i]??0,gust:hourly.wind_gusts_10m?.[i]??0 }); }
   return slots;
 }
-
 async function loadWeather(){
   document.getElementById("app").innerHTML='<div class="loading">Loading forecast for all courts…</div>';
-  const lats=COURTS.map(c=>c.lat.toFixed(4)).join(",");
-  const lons=COURTS.map(c=>c.lon.toFixed(4)).join(",");
+  const lats=COURTS.map(c=>c.lat.toFixed(4)).join(","), lons=COURTS.map(c=>c.lon.toFixed(4)).join(",");
   const url="https://api.open-meteo.com/v1/forecast"
     +`?latitude=${lats}&longitude=${lons}`
     +"&minutely_15=temperature_2m,apparent_temperature,precipitation,wind_speed_10m,wind_gusts_10m"
     +"&hourly=precipitation_probability,precipitation,temperature_2m,apparent_temperature,wind_speed_10m,wind_gusts_10m"
-    +"&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
-    +"&timezone=America%2FChicago&forecast_days=7";
+    +"&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FChicago&forecast_days=7";
   try{
-    const res=await fetch(url);
-    if(!res.ok) throw new Error("HTTP "+res.status);
-    let json=await res.json();
-    if(!Array.isArray(json)) json=[json];
-    DATA=COURTS.map((c,i)=>({ court:c, slots:buildSlots(json[i]?.minutely_15||{}, json[i]?.hourly||{}) }));
+    const res=await fetch(url); if(!res.ok) throw new Error("HTTP "+res.status);
+    let json=await res.json(); if(!Array.isArray(json)) json=[json];
+    DATA=COURTS.map((c,i)=>({court:c,slots:buildSlots(json[i]?.minutely_15||{},json[i]?.hourly||{})}));
     const dates=[...new Set(DATA[0].slots.map(s=>s.date))];
-    if(!ui.date||!dates.includes(ui.date)) ui.date=dates[0];
+    if(!ui.date||!dates.includes(ui.date)) ui.date=dates.includes(todayCentral())?todayCentral():dates[0];
     document.getElementById("subline").textContent="Rain-aware playability for "+COURTS.length+" local courts";
     const now=new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"});
     document.getElementById("updated").textContent="updated "+now+" CT";
     render();
   }catch(e){
     document.getElementById("app").innerHTML='<div class="err">Could not load the forecast ('+e.message
-      +'). Check your connection and tap refresh. If you just opened this file directly, it still needs internet to reach Open-Meteo.</div>';
+      +'). Check your connection and tap refresh. (The preview panel blocks internet — this works on the live site.)</div>';
   }
 }
 
-/* ---------------- windows ---------------- */
-function windowsFor(slots){ // merge consecutive non-"no" slots within hour range
-  const inHrs=s=>{const h=+s.t.slice(11,13); return h>=CONFIG.hours.start && h<CONFIG.hours.end;};
-  const list=slots.filter(inHrs).sort((a,b)=>a.mins-b.mins);
+/* ---------------- windows (scan) ---------------- */
+function inHours(s){ const h=+s.t.slice(11,13); return h>=CONFIG.hours.start && h<CONFIG.hours.end; }
+function windowsFor(slots){
+  const list=slots.filter(inHours).sort((a,b)=>a.mins-b.mins);
   const wins=[]; let cur=null;
-  for(const s of list){
-    const st=score(s).status;
+  for(const s of list){ const st=score(s).status;
     if(st==="no"){ if(cur){wins.push(cur);cur=null;} continue; }
-    if(cur && s.mins-cur.end<=cur.step+1){ // contiguous
-      cur.endT=s.t; cur.end=s.mins; cur.status=rank(st)>rank(cur.status)?st:cur.status;
-    } else {
-      if(cur) wins.push(cur);
-      cur={startT:s.t,endT:s.t,end:s.mins,step:s.gran,status:st};
-    }
-  }
-  if(cur) wins.push(cur);
-  return wins.filter(w=>true);
+    if(cur && s.mins-cur.end<=cur.step+1){ cur.end=s.mins; if(rank(st)>rank(cur.status))cur.status=st; }
+    else { if(cur)wins.push(cur); cur={start:s.mins,end:s.mins,step:s.gran,status:st}; } }
+  if(cur) wins.push(cur); return wins;
 }
 
-/* ---------------- rendering ---------------- */
+/* ---------------- duration window eval ---------------- */
+function evalWindow(slots,start,dur){
+  const end=start+dur;
+  const seg=slots.filter(s=>s.mins>=start && s.mins<end).sort((a,b)=>a.mins-b.mins);
+  if(!seg.length) return null;
+  let worst="good",firstBad=null,firstCaution=null; const reasons=new Set();
+  let fMin=Infinity,fMax=-Infinity,probMax=0,gustMax=0,cSum=0,playN=0;
+  for(const s of seg){ const r=score(s);
+    if(rank(r.status)>rank(worst)) worst=r.status;
+    if(r.status==="no"&&!firstBad) firstBad=s;
+    if(r.status==="caution"&&!firstCaution) firstCaution=s;
+    r.reasons.forEach(x=>{ if(x!=="Clear & comfortable") reasons.add(x); });
+    fMin=Math.min(fMin,s.feels); fMax=Math.max(fMax,s.feels);
+    probMax=Math.max(probMax,s.prob); gustMax=Math.max(gustMax,s.gust);
+    cSum+=comfort(s); if(r.status!=="no") playN++; }
+  return { seg,worst,firstBad,firstCaution,reasons:[...reasons],
+    stats:{fMin,fMax,probMax,gustMax}, playable:playN/seg.length, avgComfort:cSum/seg.length,
+    coversFull: seg[seg.length-1].mins+ (seg[seg.length-1].gran||15) >= end };
+}
+function windowSummary(w){
+  if(w.worst==="good") return {cls:"good", label:"Yes — clear the whole time 🎾"};
+  if(w.worst==="caution") return {cls:"caution", label:"Playable — but keep an eye out"};
+  if(w.firstBad && w.seg[0].mins < w.firstBad.mins)
+    return {cls:"caution", label:`Good until ${fmtTime(w.firstBad.t)}, then not ideal`};
+  return {cls:"no", label:"Not a good window"};
+}
+
+/* ---------------- shared inputs ---------------- */
 function dateSelect(id,onchange){
   const dates=[...new Set(DATA[0].slots.map(s=>s.date))];
   return `<select id="${id}" onchange="${onchange}">`+dates.map(d=>
-    `<option value="${d}" ${d===ui.date?"selected":""}>${fmtDate(d)}</option>`).join("")+`</select>`;
+    `<option value="${d}" ${d===ui.date?"selected":""}>${fmtDate(d)}${d===todayCentral()?" (today)":""}</option>`).join("")+`</select>`;
+}
+function courtSelect(id,onchange,sel){
+  return `<select id="${id}" onchange="${onchange}">`+DATA.map((d,i)=>
+    `<option value="${i}" ${i===sel?"selected":""}>${d.court.name} · ${d.court.area.split(" (")[0]}</option>`).join("")+`</select>`;
+}
+function timeOptions(){ let o="";
+  for(let h=CONFIG.hours.start;h<CONFIG.hours.end;h++) for(const m of [0,30]){
+    const ap=h<12?"AM":"PM";let hh=h%12;if(hh===0)hh=12;
+    o+=`<option value="${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}">${hh}:${String(m).padStart(2,"0")} ${ap}</option>`; }
+  return o;
+}
+function durationOptions(sel){ return DURATIONS.map(([v,l])=>`<option value="${v}" ${v===sel?"selected":""}>${l}</option>`).join(""); }
+function targetMins(date,time){ return toMinutes(`${date}T${time}`); }
+function defaultStart(date){ // next half hour today, else 9:00
+  if(date!==todayCentral()) return "09:00";
+  const nm=nowMinsCentral();
+  for(let h=CONFIG.hours.start;h<CONFIG.hours.end;h++) for(const m of [0,30])
+    if(targetMins(date,`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`)>=nm)
+      return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+  return "09:00";
 }
 
-function render(){
-  if(!DATA) return;
-  const app=document.getElementById("app");
+/* ---------------- render dispatch ---------------- */
+function render(){ if(!DATA) return; const app=document.getElementById("app");
   if(mode==="1") app.innerHTML=renderScan();
   else if(mode==="2") app.innerHTML=renderCheck();
-  else app.innerHTML=renderFind();
+  else if(mode==="3") app.innerHTML=renderFind();
+  else app.innerHTML=renderRadar();
 }
 
+/* ---------------- MODE 1: scan ---------------- */
 function renderScan(){
-  let h=`<div class="card"><div class="toolbar">
-     <div class="hdr" style="margin:0">When can I play?</div>
-     <label class="fld" style="flex:0 0 auto;min-width:150px"><span>Day</span>${dateSelect("scanDate","ui.date=this.value;render()")}</label>
-   </div><div class="muted">Green/amber blocks show playable times ${CONFIG.hours.start} AM–${CONFIG.hours.end-12} PM. Courts with the most clear time first.</div></div>`;
-  const rows=DATA.map(d=>{
-    const day=d.slots.filter(s=>s.date===ui.date);
+  let h=`<div class="card"><div class="row">
+     <label class="fld flex1"><span>When can I play?</span>${dateSelect("scanDate","ui.date=this.value;render()")}</label>
+   </div><div class="muted" style="margin-top:8px">Playable blocks, ${hLabel(CONFIG.hours.start)}–${hLabel(CONFIG.hours.end)}. Most clear time first.</div></div>`;
+  const rows=DATA.map(d=>{ const day=d.slots.filter(s=>s.date===ui.date);
     const wins=windowsFor(day);
-    const inHrs=day.filter(s=>{const hh=+s.t.slice(11,13);return hh>=CONFIG.hours.start&&hh<CONFIG.hours.end;}).sort((a,b)=>a.mins-b.mins);
+    const inHrs=day.filter(inHours).sort((a,b)=>a.mins-b.mins);
     const goodMin=inHrs.reduce((n,s)=>n+(score(s).status!=="no"?s.gran:0),0);
-    return { d, wins, inHrs, goodMin };
-  }).sort((a,b)=>b.goodMin-a.goodMin);
-
+    return {d,wins,inHrs,goodMin}; }).sort((a,b)=>b.goodMin-a.goodMin);
   h+=`<div class="card">`;
   rows.forEach(r=>{
     const bar=r.inHrs.map(s=>`<div class="seg ${score(s).status}"></div>`).join("");
-    const winTxt = r.wins.length
-      ? r.wins.map(w=>`<span class="dot" style="background:var(--${w.status})"></span>${fmtTime(w.startT)}–${fmtTime(nextLabel(w))} <span class="pill ${w.status}" style="padding:1px 7px">${w.status==="good"?"good":"ok"}</span>`).join("<br>")
+    const winTxt=r.wins.length? r.wins.map(w=>
+      `<span class="dot" style="background:var(--${w.status})"></span>${labelFromMins(w.start)}–${labelFromMins(w.end+w.step)} <span class="pill ${w.status}" style="padding:1px 7px">${w.status==="good"?"good":"ok"}</span>`).join("<br>")
       : `<span style="color:var(--no)">No playable window this day</span>`;
-    const hrs=(r.goodMin/60);
+    const hrs=r.goodMin/60;
     h+=`<div class="courtRow" style="flex-direction:column;align-items:stretch">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-          <div><div class="cname">${r.d.court.name}</div><div class="cmeta">${r.d.court.area}</div></div>
+          <div><div class="cname">${r.d.court.name}</div><div class="cmeta">${r.d.court.area.split(" (")[0]}</div></div>
           <span class="pill ${hrs>=2?"good":hrs>0?"caution":"no"}">${hrs>0?hrs.toFixed(hrs<10?1:0)+"h playable":"none"}</span>
         </div>
-        <div class="bar" title="${CONFIG.hours.start}:00–${CONFIG.hours.end}:00">${bar}</div>
-        <div class="win">${winTxt}</div>
-      </div>`;
-  });
-  h+=`</div>`;
-  return h;
+        <div class="bar">${bar}</div><div class="win">${winTxt}</div></div>`; });
+  h+=`</div>`; return h;
 }
-function nextLabel(w){ // end label = end slot + its step so range is inclusive of that block
-  const endMins=w.end+w.step;
-  const base=new Date(Date.UTC(1970,0,1)); base.setUTCMinutes(endMins);
-  const Y=base.getUTCFullYear(),M=String(base.getUTCMonth()+1).padStart(2,"0"),D=String(base.getUTCDate()).padStart(2,"0");
-  const hh=String(base.getUTCHours()).padStart(2,"0"),mm=String(base.getUTCMinutes()).padStart(2,"0");
-  return `${Y}-${M}-${D}T${hh}:${mm}`;
-}
+function hLabel(h){ const ap=h<12?"am":"pm";let hh=h%12;if(hh===0)hh=12;return hh+ap; }
 
-function nearestSlot(slots,targetMins){
-  let best=null,bd=Infinity;
-  for(const s of slots){ const d=Math.abs(s.mins-targetMins); if(d<bd){bd=d;best=s;} }
-  return best;
-}
-function timeOptions(){
-  let o="";
-  for(let h=CONFIG.hours.start;h<CONFIG.hours.end;h++){
-    for(const m of [0,30]){
-      const ap=h<12?"AM":"PM"; let hh=h%12; if(hh===0)hh=12;
-      const val=`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
-      o+=`<option value="${val}">${hh}:${String(m).padStart(2,"0")} ${ap}</option>`;
-    }
-  }
-  return o;
-}
-function targetMinsFrom(date,time){ return toMinutes(`${date}T${time}`); }
-
-function statCard(s){
-  return `<div class="stats">
-    <div class="stat"><b>${Math.round(s.feels)}°</b><span>feels like (${Math.round(s.temp)}° actual)</span></div>
-    <div class="stat"><b>${s.prob}%</b><span>rain chance</span></div>
-    <div class="stat"><b>${s.precip.toFixed(2)}"</b><span>precip this ${s.gran===15?"15 min":"hour"}</span></div>
-    <div class="stat"><b>${Math.round(s.wind)} mph</b><span>wind · gusts ${Math.round(s.gust)}</span></div>
-  </div>`;
-}
-
+/* ---------------- MODE 2: check (court + window) ---------------- */
+let ck={court:0,dur:60};
 function renderCheck(){
-  const courtOpts=DATA.map((d,i)=>`<option value="${i}">${d.court.name} · ${d.court.area}</option>`).join("");
   let h=`<div class="card">
     <div class="hdr">Is it good to play?</div>
-    <div class="row">
-      <label class="fld"><span>Court</span><select id="ckCourt" onchange="renderCheckResult()">${courtOpts}</select></label>
-    </div>
+    <div class="row"><label class="fld"><span>Court</span>${courtSelect("ckCourt","renderCheckResult()",ck.court)}</label></div>
     <div class="row" style="margin-top:10px">
       <label class="fld"><span>Day</span>${dateSelect("ckDate","renderCheckResult()")}</label>
-      <label class="fld"><span>Time</span><select id="ckTime" onchange="renderCheckResult()">${timeOptions()}</select></label>
-    </div>
-  </div>
-  <div id="ckResult"></div>`;
-  setTimeout(()=>{ setNearestDefaultTime("ckTime"); renderCheckResult(); },0);
+      <label class="fld"><span>Start</span><select id="ckTime" onchange="renderCheckResult()">${timeOptions()}</select></label>
+      <label class="fld"><span>Match length</span><select id="ckDur" onchange="renderCheckResult()">${durationOptions(ck.dur)}</select></label>
+    </div></div><div id="ckResult"></div>`;
+  setTimeout(()=>{ const t=document.getElementById("ckTime"); if(t) t.value=defaultStart(ui.date); renderCheckResult(); },0);
   return h;
 }
 function renderCheckResult(){
-  const ci=+document.getElementById("ckCourt").value;
-  const date=document.getElementById("ckDate").value;
-  const time=document.getElementById("ckTime").value;
-  const d=DATA[ci];
-  const target=targetMinsFrom(date,time);
-  const s=nearestSlot(d.slots.filter(x=>x.date===date),target)||nearestSlot(d.slots,target);
-  if(!s){ document.getElementById("ckResult").innerHTML='<div class="card err">No forecast for that time.</div>'; return; }
-  const r=score(s);
-  const label={good:"Yes — go play 🎾",caution:"Maybe — playable, watch it",no:"No — not a good time"}[r.status];
-  document.getElementById("ckResult").innerHTML=`<div class="card">
-    <div class="cmeta">${d.court.name} · ${fmtDate(date)} · ${fmtTime(s.t)}<span class="gran">${s.gran===15?"15-min":"hourly"}</span></div>
-    <div class="verdict ${r.status}">${label}</div>
-    ${statCard(s)}
-    <ul class="reasons">${r.reasons.map(x=>`<li>${x}</li>`).join("")}</ul>
+  ck.court=+document.getElementById("ckCourt").value;
+  ck.dur=+document.getElementById("ckDur").value;
+  const date=document.getElementById("ckDate").value, time=document.getElementById("ckTime").value;
+  ui.date=date;
+  const d=DATA[ck.court], start=targetMins(date,time);
+  const w=evalWindow(d.slots.filter(s=>s.date===date),start,ck.dur);
+  const box=document.getElementById("ckResult");
+  if(!w){ box.innerHTML='<div class="card err">No forecast for that window.</div>'; return; }
+  const sum=windowSummary(w);
+  const total=w.seg.reduce((n,s)=>n+ (s.gran||15),0);
+  const segbar=w.seg.map(s=>`<div class="seg ${score(s).status}" title="${fmtTime(s.t)}"></div>`).join("");
+  const rlist=w.reasons.length?w.reasons:["Clear & comfortable the whole time"];
+  box.innerHTML=`<div class="card">
+    <div class="cmeta">${d.court.name} · ${fmtDate(date)} · ${time&&fmtTime(date+"T"+time)}–${labelFromMins(start+ck.dur)}${w.coversFull?"":" (forecast ends early)"}</div>
+    <div class="verdict ${sum.cls}">${sum.label}</div>
+    <div class="winbar">${segbar}</div>
+    <div class="stats">
+      <div class="stat"><b>${Math.round(w.stats.fMin)}–${Math.round(w.stats.fMax)}°</b><span>feels-like range</span></div>
+      <div class="stat"><b>${w.stats.probMax}%</b><span>peak rain chance</span></div>
+      <div class="stat"><b>${w.playable>=1?"Full":Math.round(w.playable*100)+"%"}</b><span>of window playable</span></div>
+      <div class="stat"><b>${Math.round(w.stats.gustMax)} mph</b><span>peak gusts</span></div>
+    </div>
+    <ul class="reasons">${rlist.map(x=>`<li>${x}</li>`).join("")}</ul>
+    <div class="subnote">Want the radar and temperature curve for this court? Tap the <b>Radar</b> tab.</div>
   </div>`;
 }
 
+/* ---------------- MODE 3: find (rank courts for a window) ---------------- */
+let fd={dur:60};
 function renderFind(){
   let h=`<div class="card">
-    <div class="hdr">Best courts for my time</div>
+    <div class="hdr">Best courts for my match</div>
     <div class="row">
       <label class="fld"><span>Day</span>${dateSelect("fdDate","renderFindResult()")}</label>
-      <label class="fld"><span>Time</span><select id="fdTime" onchange="renderFindResult()">${timeOptions()}</select></label>
-    </div>
-  </div><div id="fdResult"></div>`;
-  setTimeout(()=>{ setNearestDefaultTime("fdTime"); renderFindResult(); },0);
+      <label class="fld"><span>Start</span><select id="fdTime" onchange="renderFindResult()">${timeOptions()}</select></label>
+      <label class="fld"><span>Match length</span><select id="fdDur" onchange="renderFindResult()">${durationOptions(fd.dur)}</select></label>
+    </div></div><div id="fdResult"></div>`;
+  setTimeout(()=>{ const t=document.getElementById("fdTime"); if(t) t.value=defaultStart(ui.date); renderFindResult(); },0);
   return h;
 }
 function renderFindResult(){
-  const date=document.getElementById("fdDate").value;
-  const time=document.getElementById("fdTime").value;
-  const target=targetMinsFrom(date,time);
-  const ranked=DATA.map(d=>{
-    const s=nearestSlot(d.slots.filter(x=>x.date===date),target)||nearestSlot(d.slots,target);
-    return s?{court:d.court,s,r:score(s),c:comfort(s)}:null;
-  }).filter(Boolean).sort((a,b)=> (rank(a.r.status)-rank(b.r.status)) || (b.c-a.c) );
-  let h=`<div class="card"><div class="cmeta" style="margin-bottom:4px">${fmtDate(date)} · around ${fmtTime(`${date}T${time}`)} — ${ranked.filter(x=>x.r.status!=="no").length} of ${ranked.length} courts playable</div>`;
+  fd.dur=+document.getElementById("fdDur").value;
+  const date=document.getElementById("fdDate").value, time=document.getElementById("fdTime").value;
+  ui.date=date; const start=targetMins(date,time);
+  const ranked=DATA.map(d=>{ const w=evalWindow(d.slots.filter(s=>s.date===date),start,fd.dur);
+    return w?{court:d.court,w,sum:windowSummary(w)}:null; }).filter(Boolean)
+    .sort((a,b)=> rank(a.w.worst)-rank(b.w.worst) || b.w.playable-a.w.playable || b.w.avgComfort-a.w.avgComfort);
+  const okN=ranked.filter(x=>x.w.worst!=="no").length;
+  let h=`<div class="card"><div class="cmeta" style="margin-bottom:2px">${fmtDate(date)} · ${fmtTime(date+"T"+time)}–${labelFromMins(start+fd.dur)} · ${okN} of ${ranked.length} courts playable</div>`;
   ranked.forEach((x,i)=>{
-    h+=`<div class="courtRow">
-        <div class="rank">${i+1}</div>
-        <div class="flex1">
-          <div class="cname">${x.court.name}</div>
-          <div class="cmeta">${x.court.area} · feels ${Math.round(x.s.feels)}° · ${x.s.prob}% rain · gusts ${Math.round(x.s.gust)} mph</div>
-        </div>
-        <span class="pill ${x.r.status}">${x.r.status==="good"?"good":x.r.status==="caution"?"ok":"no"}</span>
-      </div>`;
-  });
-  h+=`</div>`;
-  document.getElementById("fdResult").innerHTML=h;
+    const note = x.w.worst==="good" ? "Clear the whole match"
+      : (x.w.firstBad && x.w.seg[0].mins<x.w.firstBad.mins) ? `Good until ${fmtTime(x.w.firstBad.t)}`
+      : x.w.worst==="caution" ? (x.w.reasons[0]||"Watch conditions") : (x.w.reasons[0]||"Not ideal");
+    h+=`<div class="courtRow"><div class="rank">${i+1}</div>
+        <div class="flex1"><div class="cname">${x.court.name}</div>
+          <div class="cmeta">${x.court.area.split(" (")[0]} · feels ${Math.round(x.w.stats.fMin)}–${Math.round(x.w.stats.fMax)}° · ${x.w.stats.probMax}% rain · ${note}</div></div>
+        <span class="pill ${x.sum.cls}">${x.sum.cls==="good"?"good":x.sum.cls==="caution"?"ok":"no"}</span></div>`; });
+  h+=`</div>`; document.getElementById("fdResult").innerHTML=h;
 }
 
-function setNearestDefaultTime(id){
-  const sel=document.getElementById(id); if(!sel) return;
-  // if selected day is today, default to the next half-hour; else leave at first option
-  const dateSel=document.getElementById(id==="ckTime"?"ckDate":"fdDate");
-  const date=dateSel?dateSel.value:ui.date;
-  const dates=[...new Set(DATA[0].slots.map(s=>s.date))];
-  if(date!==dates[0]) return;
-  const nm=nowMinsCentral();
-  for(const opt of sel.options){
-    if(targetMinsFrom(date,opt.value)>=nm){ sel.value=opt.value; return; }
-  }
+/* ---------------- MODE 4: radar + temperature ---------------- */
+let rd={court:1,overlay:"radar"};
+function renderRadar(){
+  let h=`<div class="card">
+    <div class="hdr">Court forecast — temp & radar</div>
+    <div class="row">
+      <label class="fld"><span>Court</span>${courtSelect("rdCourt","renderRadarResult()",rd.court)}</label>
+      <label class="fld"><span>Day</span>${dateSelect("rdDate","renderRadarResult()")}</label>
+    </div></div><div id="rdResult"></div>`;
+  setTimeout(renderRadarResult,0); return h;
+}
+function renderRadarResult(){
+  rd.court=+document.getElementById("rdCourt").value;
+  const date=document.getElementById("rdDate").value; ui.date=date;
+  const d=DATA[rd.court];
+  const day=d.slots.filter(s=>s.date===date).sort((a,b)=>a.mins-b.mins);
+  const chart=tempChart(day,date);
+  const c=d.court;
+  const overlays=[["radar","Radar"],["temp","Temp"],["wind","Wind"]];
+  const toggle=overlays.map(([v,l])=>`<button class="${v===rd.overlay?"on":""}" onclick="setOverlay('${v}')">${l}</button>`).join("");
+  document.getElementById("rdResult").innerHTML=`
+    <div class="card"><div class="hdr">Temperature &amp; rain — ${fmtDate(date)}</div>
+      <div class="cmeta" style="margin-bottom:4px">${c.name}</div>
+      <div class="chartwrap">${chart}</div>
+      <div class="legend"><span><span class="dot2" style="background:#e07b39;border-radius:2px"></span>Feels-like</span>
+        <span><span class="dot2" style="background:#0a2540;border-radius:2px"></span>Actual temp</span>
+        <span><span class="dot2" style="background:#8fbce8;border-radius:2px"></span>Rain chance</span>
+        <span><span class="dot2" style="background:rgba(63,145,66,.18)"></span>Playable band</span></div>
+    </div>
+    <div class="card"><div class="hdr">Live map</div>
+      <div class="toggle">${toggle}</div>
+      <iframe class="radar" id="windyFrame" loading="lazy" src="${windyURL(c.lat,c.lon,rd.overlay)}" title="Radar map"></iframe>
+      <div class="subnote">Interactive — drag to pan, scroll to zoom, and press play at the bottom to watch rain move. Marker shows ${c.name}.</div>
+    </div>`;
+}
+function setOverlay(o){ rd.overlay=o;
+  document.querySelectorAll(".toggle button").forEach(b=>b.classList.toggle("on",b.textContent.toLowerCase()===o));
+  const f=document.getElementById("windyFrame"); const c=DATA[rd.court].court;
+  if(f) f.src=windyURL(c.lat,c.lon,o);
+}
+function windyURL(lat,lon,overlay){
+  return `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}`
+    +`&zoom=9&level=surface&overlay=${overlay}&menu=&message=&marker=true&calendar=now&pressure=`
+    +`&type=map&location=coordinates&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
 }
 
+/* ---------------- temperature chart (inline SVG) ---------------- */
+function tempChart(day,date){
+  const W=720,H=270,padL=40,padR=14,padT=16,padB=42;
+  const h0=CONFIG.hours.start*60, h1=CONFIG.hours.end*60; // minute-of-day window
+  const dayStart=toMinutes(date+"T00:00");
+  const pts=day.map(s=>({mod:s.mins-dayStart, feels:s.feels, temp:s.temp, prob:s.prob}))
+               .filter(p=>p.mod>=h0-30 && p.mod<=h1+30);
+  if(pts.length<2) return `<div class="muted" style="padding:20px">No detailed data for this day.</div>`;
+  const temps=pts.flatMap(p=>[p.feels,p.temp]);
+  let tMin=Math.min(...temps), tMax=Math.max(...temps);
+  tMin=Math.floor((tMin-3)/5)*5; tMax=Math.ceil((tMax+3)/5)*5;
+  if(tMax-tMin<15) tMax=tMin+15;
+  const x=mod=>padL+((mod-h0)/(h1-h0))*(W-padL-padR);
+  const y=t=>padT+(1-(t-tMin)/(tMax-tMin))*(H-padT-padB);
+  const yR=p=>H-padB-(p/100)*(H-padT-padB)*0.42; // rain uses bottom 42%
+  const line=(key)=>pts.map((p,i)=>`${i?"L":"M"}${x(p.mod).toFixed(1)} ${y(p[key]).toFixed(1)}`).join(" ");
+  const rainArea=`M${x(pts[0].mod).toFixed(1)} ${(H-padB).toFixed(1)} `
+    +pts.map(p=>`L${x(p.mod).toFixed(1)} ${yR(p.prob).toFixed(1)}`).join(" ")
+    +` L${x(pts[pts.length-1].mod).toFixed(1)} ${(H-padB).toFixed(1)} Z`;
+  // gridlines / temp ticks
+  let grid="",ticks="";
+  for(let t=tMin;t<=tMax;t+=5){ const yy=y(t).toFixed(1);
+    grid+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#eef3f8"/>`;
+    if((t-tMin)%10===0) ticks+=`<text x="${padL-6}" y="${(+yy+3).toFixed(1)}" text-anchor="end" font-size="10" fill="#8593a8">${t}°</text>`; }
+  // playable band 40-95
+  let band="";
+  const bTop=Math.min(CONFIG.temp.maxNo,tMax), bBot=Math.max(CONFIG.temp.minNo,tMin);
+  if(bTop>bBot) band=`<rect x="${padL}" y="${y(bTop).toFixed(1)}" width="${W-padL-padR}" height="${(y(bBot)-y(bTop)).toFixed(1)}" fill="rgba(63,145,66,.10)"/>`;
+  let thr="";
+  [CONFIG.temp.minNo,CONFIG.temp.maxNo].forEach(t=>{ if(t>tMin&&t<tMax)
+    thr+=`<line x1="${padL}" y1="${y(t).toFixed(1)}" x2="${W-padR}" y2="${y(t).toFixed(1)}" stroke="#e2a0ac" stroke-width="1" stroke-dasharray="4 4"/>`
+       +`<text x="${W-padR}" y="${(y(t)-3).toFixed(1)}" text-anchor="end" font-size="9" fill="#c06">${t}°</text>`; });
+  // x ticks
+  let xt="";
+  for(let hh=CONFIG.hours.start;hh<=CONFIG.hours.end;hh+=3){ const xx=x(hh*60).toFixed(1);
+    xt+=`<line x1="${xx}" y1="${padT}" x2="${xx}" y2="${H-padB}" stroke="#f1f5fa"/>`
+      +`<text x="${xx}" y="${H-padB+16}" text-anchor="middle" font-size="10" fill="#8593a8">${hLabel(hh)}</text>`; }
+  // now line
+  let nowline="";
+  if(date===todayCentral()){ const nm=nowMinsCentral()-dayStart;
+    if(nm>=h0&&nm<=h1){ const nx=x(nm).toFixed(1);
+      nowline=`<line x1="${nx}" y1="${padT}" x2="${nx}" y2="${H-padB}" stroke="#2f6cc0" stroke-width="1.2" stroke-dasharray="2 3"/>`
+        +`<text x="${nx}" y="${padT-3}" text-anchor="middle" font-size="9" fill="#2f6cc0">now</text>`; } }
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet" font-family="inherit">
+    ${grid}${band}${xt}${thr}
+    <path d="${rainArea}" fill="rgba(143,188,232,.35)" stroke="none"/>
+    <text x="${padL+2}" y="${H-padB-4}" font-size="9" fill="#5f86ad">rain %</text>
+    <path d="${line('temp')}" fill="none" stroke="#0a2540" stroke-width="1.4" stroke-dasharray="5 3" opacity=".8"/>
+    <path d="${line('feels')}" fill="none" stroke="#e07b39" stroke-width="2.6"/>
+    ${ticks}${nowline}
+  </svg>`;
+}
+
+/* ---------------- tabs ---------------- */
 function setMode(m){ mode=m;
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.mode===m));
   render();
 }
-
-/* rules text */
 document.getElementById("rulesText").innerHTML=
   `Rain is the hard stop: any measurable precip or ≥${CONFIG.rain.probNo}% chance = <b>No</b>; ${CONFIG.rain.probCaution}–${CONFIG.rain.probNo}% = caution. `
  +`Feels-like below ${CONFIG.temp.minNo}° or above ${CONFIG.temp.maxNo}° = No; ${CONFIG.temp.minNo}–${CONFIG.temp.minCaution}° or ${CONFIG.temp.maxCaution}–${CONFIG.temp.maxNo}° = caution. `
- +`Wind is minor: gusts ≥${CONFIG.wind.gustCaution} mph = caution only. Edit these in the CONFIG block near the top of the file.`;
+ +`Wind is minor: gusts ≥${CONFIG.wind.gustCaution} mph = caution. For a match window, the verdict uses the worst moment across your start time + length. Edit thresholds in the CONFIG block near the top of the file.`;
 
 loadWeather();
 </script>
